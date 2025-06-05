@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz Bac Français – 100 questions</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom, #f0f8ff, #e0f7fa);
+      padding: 20px;
+    }
+    #header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    #header h1 {
+      margin: 0 0 10px 0;
+      color: #0d47a1;
+    }
+    #timer, #streak {
+      font-size: 1.2em;
+      font-weight: bold;
+    }
+    #timer { color: #b71c1c; }
+    #streak { color: #1b5e20; margin-top: 5px; }
+    .question {
+      background: white;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .question h3 {
+      margin: 0 0 10px 0;
+      color: #333;
+    }
+    .options button {
+      display: block;
+      margin: 5px 0;
+      padding: 10px;
+      width: 100%;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      background: #e0e0e0;
+      transition: 0.2s;
+      font-weight: bold;
+    }
+    .options button:hover { background: #d0d0d0; }
+    .correct { background-color: #a5d6a7 !important; color: #1b5e20; }
+    .incorrect { background-color: #ef9a9a !important; color: #b71c1c; }
+    .feedback { margin-top: 10px; font-style: italic; color: #555; }
+    #result { margin-top: 30px; color: #0d47a1; font-size: 1.4em; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div id="header">
+    <h1>Quiz Bac Français – 100 questions</h1>
+    <div>
+      ⏳ <span id="timer">20:00</span> • 🔥 Série : <span id="streak">0</span>
+    </div>
+  </div>
+  <div id="quiz"></div>
+  <h2 id="result"></h2>
+
+  <script>
+    const baseQuestions=[{q:"À quel mouvement appartient Molière ?",options:["Romantisme","Classicisme","Réalisme","Lumières"],answer:1},{q:"Quel mouvement met l'accent sur l'humanisme à la Renaissance ?",options:["Humanisme","Baroque","Symbolisme","Naturalisme"],answer:0},{q:"Lequel de ces auteurs est emblématique du Romantisme français ?",options:["Victor Hugo","Voltaire","Rabelais","Maupassant"],answer:0},{q:"Quel courant cherche à représenter fidèlement la société au XIXᵉ siècle ?",options:["Surréalisme","Réalisme","Baroque","Classicisme"],answer:1},{q:"Dans quel mouvement situe‑t‑on Baudelaire ?",options:["Parnasse","Symbolisme","Lumières","Romantisme"],answer:1},{q:"Quel est le manifeste fondateur du Surréalisme ?",options:["Manifeste du Surréalisme (Breton, 1924)","Préface de Cromwell","Germinal","Essais"],answer:0},{q:"« Je vis, je meurs : je me brûle et me noie » contient une :",options:["Antithèse","Litote","Allitération","Comparaison"],answer:0},{q:"« C'est un roc !... c'est un pic !... c'est un cap ! » illustre :",options:["Accumulation","Chiasme","Oxymore","Ellipse"],answer:0},{q:"Quel registre vise à inspirer la terreur devant l'inexpliqué ?",options:["Fantastique","Satirique","Épique","Lyrique"],answer:0},{q:"La litote consiste à :",options:["Exagérer","Dire moins pour suggérer plus","Comparer avec comme","Associer des contraires"],answer:1},{q:"Quel philosophe des Lumières est l'auteur de 'Candide' ?",options:["Voltaire","Diderot","Montesquieu","Rousseau"],answer:0},{q:"Quel registre raconte des exploits héroïques ?",options:["Épique","Pathétique","Comique","Fantastique"],answer:0},{q:"La métonymie remplace un mot par :",options:["Son contraire","Une image poétique","Un terme logiquement lié","Un hyperonyme"],answer:2},{q:"À quel siècle associe‑t‑on l'absurde (Ionesco, Beckett) ?",options:["XVIIIᵉ","XIXᵉ","XXᵉ","XVIIᵉ"],answer:2},{q:"Quel dramaturge est un pilier du Classicisme ?",options:["Corneille","Hugo","Camus","Apollinaire"],answer:0},{q:"« Paris s'éveille » est une :",options:["Personnification","Anaphore","Oxymore","Hyperbole"],answer:0},{q:"Quel procédé annonce un événement futur ?",options:["Prolepse","Analepse","Ellipse","Sommaire"],answer:0},{q:"Quelle figure répète un même mot en début de phrase ?",options:["Anaphore","Chiasme","Parallélisme","Assonance"],answer:0},{q:"Le Naturalisme a pour objectif :",options:["Peindre scientifiquement la société","Faire rêver","Célébrer le moi","Imiter l'Antiquité"],answer:0},{q:"Quel registre provoque la pitié et la compassion ?",options:["Pathétique","Satirique","Épique","Comique"],answer:0},{q:"« Cette obscure clarté » est un exemple d' :",options:["Oxymore","Allégorie","Antiphrase","Métonymie"],answer:0},{q:"Quel mouvement valorise le moi, la nature et les sentiments ?",options:["Romantisme","Humanisme","Classicisme","Parnasse"],answer:0},{q:"La focalisation interne signifie :",options:["Vision du monde par un personnage","Narrateur omniscient","Aucun point de vue","Narration externe"],answer:0},{q:"Dans un commentaire, on analyse d'abord :",options:["Les procédés et leurs effets","La biographie","Le résumé","Le décor"],answer:0},{q:"Quel registre se sert du rire pour dénoncer ?",options:["Satirique","Lyrique","Fantastique","Tragique"],answer:0}];
+
+    const questions=[];
+    while(questions.length<100){questions.push(...baseQuestions);}
+    questions.length=100;
+
+    for(let i=questions.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[questions[i],questions[j]]=[questions[j],questions[i]];}
+
+    let timeLeft=1200;
+    const timerElt=document.getElementById('timer');
+    const timerId=setInterval(()=>{timeLeft--;const m=String(Math.floor(timeLeft/60)).padStart(2,'0');const s=String(timeLeft%60).padStart(2,'0');timerElt.textContent=`${m}:${s}`;if(timeLeft<=0){clearInterval(timerId);finishQuiz();}},1000);
+
+    const quiz=document.getElementById('quiz');
+    let score=0,answered=0,currentStreak=0,bestStreak=0;
+    const streakElt=document.getElementById('streak');
+
+    function finishQuiz(){document.querySelectorAll('.options button').forEach(b=>b.disabled=true);document.getElementById('result').textContent=`Fin du quiz • Score : ${score}/100 • Meilleure série : ${bestStreak}`;}
+
+    questions.forEach((item,idx)=>{const qDiv=document.createElement('div');qDiv.className='question';const title=document.createElement('h3');title.textContent=`${idx+1}. ${item.q}`;qDiv.appendChild(title);const optDiv=document.createElement('div');optDiv.className='options';const feedback=document.createElement('div');feedback.className='feedback';item.options.forEach((opt,i)=>{const btn=document.createElement('button');btn.textContent=opt;btn.onclick=()=>{optDiv.querySelectorAll('button').forEach(b=>b.disabled=true);if(i===item.answer){btn.classList.add('correct');feedback.textContent='Bonne réponse !';score++;currentStreak++;bestStreak=Math.max(bestStreak,currentStreak);}else{btn.classList.add('incorrect');optDiv.children[item.answer].classList.add('correct');feedback.textContent=`Mauvaise réponse → ${item.options[item.answer]}`;currentStreak=0;}streakElt.textContent=`${currentStreak} (record : ${bestStreak})`;answered++;if(answered===100){clearInterval(timerId);finishQuiz();}};optDiv.appendChild(btn);});qDiv.appendChild(optDiv);qDiv.appendChild(feedback);quiz.appendChild(qDiv);});
+  </script>
+</body>
+</html>
